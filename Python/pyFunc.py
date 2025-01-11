@@ -41,5 +41,5 @@ def multi_add(*args):
         result = result + x 
     return result
 
-#Testing multi_add
+# Testing multi_add
 print(multi_add(4,5,10,4,10))
