@@ -9,10 +9,10 @@ def main():
         result = "x is the same as y"
     print(result)
 
-    #conditional statements let you use "a if C else b"
+    # conditional statements let you use "a if C else b"
     result = "x is less than y" if x < y else "x is greater or equal to y"
     print(result)
-    #match-case makes it easy to compare multiple values.
+    # match-case makes it easy to compare multiple values.
     value = "one"
     match value:
         case "one":
