@@ -1,0 +1,10 @@
+Line 1: The quick brown fox jumps over the lazy dog.
+Here is a modified line 2
+Here is a modified line 3
+Line 4: How much wood would a woodchuck chuck if a woodchuck could chuck wood?
+Line 5: To be or not to be, that is the question.
+Line 6: All work and no play makes Jack a dull boy.
+Line 7: A journey of a thousand miles begins with a single step.
+Line 8: Better late than never.
+Line 9: Actions speak louder than words.
+Line 10: Practice makes perfect.
