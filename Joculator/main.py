@@ -1,5 +1,20 @@
 import os
-
+def validatedInput(message, validOptions = None):
+    try:
+        defInput = input(message)
+        if defInput is None or defInput == '':
+            defInput = '1'
+        if validOptions is None or defInput in validOptions:
+            return defInput
+        input('Invalid option. Please try again.')
+    except EOFError:
+        input('Unexpected end of input. Please try again.')
+    except KeyboardInterrupt:
+        input('Input interrupted. Please try again.')
+    except ValueError:
+        input('Invalid input. Please enter the correct type of value.')
+    except Exception as e:
+        input(f'Unknown error {e} occurred. Please try again.')
 # Returns the value of the specifed line in save file. 
 def checkSave(index):
     # Reads the save file and saves as a variable then closes.
@@ -8,7 +23,6 @@ def checkSave(index):
     saveFile.close()
 
     selectedData = data[index]
-    print(selectedData)
     return str(selectedData).strip()
     
 # Makes a save file in the game's main script directory.
@@ -22,7 +36,7 @@ def saveFileGeneration():
     except:
         clearScreen()
         print("No save file found. Making save file.")
-        input('Press enter to continue...')
+        validatedInput('Press enter to continue...')
         saveFile = open('save.txt', 'w')
         data = [
         '4', # 1. Number of Hands
@@ -31,7 +45,7 @@ def saveFileGeneration():
         'False' # Has a game already been started?
         ]
         for lines in range(4):
-            saveFile.write(f"{data[lines]}\n")
+            line = saveFile.write(f"{data[lines]}\n")
         saveFile.close() 
 
 # Clear the terminal screen in a cross-platform way.
@@ -54,8 +68,18 @@ def settings():
 
     # Opens save file in write mode. Loops until player has confirmed every setting changed.
     saveFile = open('save.txt', 'w')
+   # Settings menu, allows user to define variables for gameplay.
+def settings():
+    # Reads save file and copies it to variable 'data' then closes.
+    saveSettings = False
+    saveFile = open('save.txt', 'r')
+    data = saveFile.readlines()
+    saveFile.close()
+
+    # Opens save file in write mode. Loops until player has confirmed every setting changed.
     while not saveSettings:
         clearScreen()
+        print(data)
         menuOptions = {
             '1': 'Number of Hands',
             '2': 'Number of Discards',
@@ -64,30 +88,30 @@ def settings():
             }
         print('Game Options:\n')
         menuDisplay(menuOptions)
-        gameInput = input('Choose an option: ')
+        gameInput = validatedInput('Choose an option: ', menuOptions.keys())
         match gameInput:
-
             case '1':
-                gameInput = input('How many hands should the next game have? ')
+                gameInput = validatedInput('How many hands should the next game have? ')
                 data[0] = str(gameInput) + '\n'
                 saveSettings = False
 
             case '2':
-                gameInput = input('How many discards should the next game have? ')
+                gameInput = validatedInput('How many discards should the next game have? ')
                 data[1] = str(gameInput) + '\n'
                 saveSettings = False
 
             case '3':
-                gameInput = input('How many cards should your hand hold? ')
+                gameInput = validatedInput('How many cards should your hand hold? ')
                 data[2] = str(gameInput) + '\n'
                 saveSettings = False
 
             case '4':
-                for lines in range(4):
-                    saveFile.write(f"{data[lines]}")                
-                saveFile.close()
+                with open('save.txt', 'w') as saveFile:
+                    for line in data:
+                        saveFile.write(line)
                 saveSettings = True
-    
+            case _:
+                saveSettings = False
 # Game loop, shows the main game logic. 
 def playGame():
     clearScreen()
@@ -115,7 +139,7 @@ def playGame():
     else:
         print("Save game has been modified or another error has occurred.")
         gameLoop = False
-    input('Press enter to continue...')
+    validatedInput('Press enter to continue...')
 
 # Main loop, mostly for menu purposes.
 def main():
@@ -131,13 +155,8 @@ def main():
         clearScreen()
         print('Welcome to Joculator\n')
         menuDisplay(menuOptions)
-        gameInput = input('Choose an option: ')
-        if gameInput not in menuOptions:
-            clearScreen()
-            print('Please choose a valid option.\n')
-            input('Press enter to continue...')
-            continue
-        match gameInput.lower():
+        gameInput = validatedInput('Choose an option: ', menuOptions.keys())
+        match gameInput:
             case '1':
                 playGame()
             case '2':
@@ -148,10 +167,13 @@ def main():
                 print('Balatro by: LocalThunk')
                 print('Programming by: Matthew Pulver')
                 print('Planning by: Matthew Pulver')
-                input('Press enter to continue...')
-            case '4' | 'quit':
+                validatedInput('Press enter to continue...')
+            case '4':
                 clearScreen()
                 gameLoop = False
+            case _:
+                continue
+
 
 if __name__ == '__main__':
     main()
