@@ -7,9 +7,9 @@ class pokerCard:
     def __init__(self, suit, rank):
         # Defines suits and ranks.
         if suit not in pokerCard.suits:
-            raise ValueError(f"Invalid suit: {suit}")
+            raise ValueError(f'Invalid suit: {suit}')
         if rank not in pokerCard.ranks:
-            raise ValueError(f"Invalid rank: {rank}")
+            raise ValueError(f'Invalid rank: {rank}')
         self.suit = suit
         self.rank = rank
 
@@ -28,13 +28,13 @@ class pokerCard:
     # Setter method for suit. 
     def setSuit(self, suit):
         if suit not in pokerCard.suits:
-            raise ValueError(f"Invalid suit: {suit}")
+            raise ValueError(f'Invalid suit: {suit}')
         self.suit = suit
 
     # Setter method for rank. 
     def setRank(self, rank):
         if rank not in pokerCard.ranks:
-            raise ValueError(f"Invalid rank: {rank}")
+            raise ValueError(f'Invalid rank: {rank}')
         self.rank = rank
         self.chips = rank
         # If set rank is J, Q, or K, then set chips to 10 
