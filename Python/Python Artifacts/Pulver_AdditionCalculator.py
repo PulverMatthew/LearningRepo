@@ -14,7 +14,7 @@ def adder(x, y):
     print(y)
     print("\nThe total added is: " + str(z) + ".")
 
-//Calls the functions to add 3 pairs of numbers.
+# Calls the functions to add 3 pairs of numbers.
 adder(a, b)
 adder(c, d)
 adder(e, f)

@@ -1,81 +1,10 @@
+from util import validatedInput, checkSave, readSave, writeSave, saveFileGeneration, clearScreen, menuDisplay
 import os
-def validatedInput(message, validOptions = None):
-    try:
-        defInput = input(message)
-        if defInput is None or defInput == '':
-            defInput = '1'
-        if validOptions is None or defInput in validOptions:
-            return defInput
-        input('Invalid option. Please try again.')
-    except EOFError:
-        input('Unexpected end of input. Please try again.')
-    except KeyboardInterrupt:
-        input('Input interrupted. Please try again.')
-    except ValueError:
-        input('Invalid input. Please enter the correct type of value.')
-    except Exception as e:
-        input(f'Unknown error {e} occurred. Please try again.')
-# Returns the value of the specifed line in save file. 
-def checkSave(index):
-    # Reads the save file and saves as a variable then closes.
-    saveFile = open('save.txt', 'r')
-    data = saveFile.readlines()
-    saveFile.close()
-
-    selectedData = data[index]
-    return str(selectedData).strip()
-    
-# Makes a save file in the game's main script directory.
-def saveFileGeneration():
-    # Try to see if the save file is readable. If it isn't, likely doesn't exist.
-    try:
-        saveFile = open('save.txt', 'r')
-        saveFile.close()
-    
-    # Make a new save file with default values.
-    except:
-        clearScreen()
-        print("No save file found. Making save file.")
-        validatedInput('Press enter to continue...')
-        saveFile = open('save.txt', 'w')
-        data = [
-        '4', # 1. Number of Hands
-        '4', # 2. Number of Discards
-        '7', # 3. Hand Size
-        'False' # Has a game already been started?
-        ]
-        for lines in range(4):
-            line = saveFile.write(f"{data[lines]}\n")
-        saveFile.close() 
-
-# Clear the terminal screen in a cross-platform way.
-def clearScreen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    
-def menuDisplay(options):
-    # Displays custom menu options
-    for key, value in options.items():
-        #Utilizes an f-string to embed the key and value variable declared in the for loop.
-        print(f"{key}: {value}")
-
 # Settings menu, allows user to define variables for gameplay.
 def settings():
     # Reads save file and copies it to variable 'data' then closes.
     saveSettings = False
-    saveFile = open('save.txt', 'r')
-    data = saveFile.readlines()
-    saveFile.close()
-
-    # Opens save file in write mode. Loops until player has confirmed every setting changed.
-    saveFile = open('save.txt', 'w')
-   # Settings menu, allows user to define variables for gameplay.
-def settings():
-    # Reads save file and copies it to variable 'data' then closes.
-    saveSettings = False
-    saveFile = open('save.txt', 'r')
-    data = saveFile.readlines()
-    saveFile.close()
-
+    data = readSave('save.txt')
     # Opens save file in write mode. Loops until player has confirmed every setting changed.
     while not saveSettings:
         clearScreen()
@@ -89,57 +18,44 @@ def settings():
         print('Game Options:\n')
         menuDisplay(menuOptions)
         gameInput = validatedInput('Choose an option: ', menuOptions.keys())
+        
         match gameInput:
             case '1':
                 gameInput = validatedInput('How many hands should the next game have? ')
+                # Replaces null value with 1 specifically for this menu.
+                if gameInput == None:
+                    gameInput = 1
                 data[0] = str(gameInput) + '\n'
                 saveSettings = False
 
             case '2':
                 gameInput = validatedInput('How many discards should the next game have? ')
+                # Replaces null value with 1 specifically for this menu.
+                if gameInput == None:
+                    gameInput = 1
                 data[1] = str(gameInput) + '\n'
                 saveSettings = False
 
             case '3':
                 gameInput = validatedInput('How many cards should your hand hold? ')
+                # Replaces null value with 1 specifically for this menu.
+                if gameInput == None:
+                    gameInput = 1
                 data[2] = str(gameInput) + '\n'
                 saveSettings = False
 
             case '4':
-                with open('save.txt', 'w') as saveFile:
-                    for line in data:
-                        saveFile.write(line)
+                writeSave('save.txt', data)
                 saveSettings = True
             case _:
                 saveSettings = False
+                
 # Game loop, shows the main game logic. 
 def playGame():
     clearScreen()
-
-    # Placeholder logic. Checks to see if the player has played the game before.
+    # Checks to see if the player has played the game before.
     hasPreviousGame = checkSave(3)
-
-    # Continues the game based on given save data.
-    if hasPreviousGame == 'True':
-        print('Player has played game before')
-    
-    # Writes to the save file to mark the game as started.
-    elif hasPreviousGame == 'False':
-        print("This is player's first game")
-        saveFile = open('save.txt', 'r')
-        data = saveFile.readlines()
-        data[3] = 'True'
-        saveFile.close()
-        saveFile = open('save.txt', 'w')
-        for lines in range(4):
-            saveFile.write(f"{data[lines]}")
-        saveFile.close() 
-
-    # Displays an error and quits out of the game loop.
-    else:
-        print("Save game has been modified or another error has occurred.")
-        gameLoop = False
-    validatedInput('Press enter to continue...')
+    pass
 
 # Main loop, mostly for menu purposes.
 def main():
