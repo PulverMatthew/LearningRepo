@@ -1,81 +1,92 @@
-from util import validatedInput, readSave, writeSave, saveFileGeneration, clearScreen, menuDisplay
-from cards import pokerCard, pokerDeck
+"""
+Main module of the game. Contains functions for settings
+and for the main menu. 
+"""
+from util import validate_input, read_file, write_file, save_generation, clear_screen, menu_display
 from game import playGame
-import os
-# Settings menu, allows user to define variables for gameplay.
+
 def settings():
+    """
+    Settings function which allows the user to modify the save file containing game settings.
+    Settings cannot be changed if a game is currently being played, stored by the 4th line of the save file.
+    This is mainly meant to prevent cheating, but nothing stops you from modifying the save file. 
+    """
     # Reads save file and copies it to variable 'data' then closes.
-    saveSettings = False
-    data = readSave('save.txt')
+    save_settings = False
+    data = read_file('save.txt')
     # Opens save file in write mode. Loops until player has confirmed every setting changed.
-    while not saveSettings:
-        clearScreen()
-        for i, entry in enumerate(data):
-            print(entry.strip(), end = ', ')
+    while not save_settings:
+        clear_screen()
+        for entry in data:
+            print(entry.strip(), end=', ')
         print()
-        menuOptions = {
+        menu_options = {
             '1': 'Number of Hands',
             '2': 'Number of Discards',
             '3': 'Hand Size',
             '4': 'Save Settings'
-            }
+        }
         print('Game Options:\n')
-        menuDisplay(menuOptions)
-        userInput = input('Choose an option: ')
-        gameInput = validatedInput(userInput, menuOptions)
-        
-        match gameInput:
+        menu_display(menu_options)
+        user_input = input('Choose an option: ')
+        game_input = validate_input(user_input, menu_options)
+
+        match game_input:
             case '1':
-                userInput = input('How many hands should the next game have? ')
-                gameInput = validatedInput(userInput)
+                user_input = input('How many hands should the next game have? ')
+                game_input = validate_input(user_input)
                 # Replaces null value with 1 specifically for this menu.
-                if gameInput == '':
-                    gameInput = 1
-                data[0] = str(gameInput) + '\n'
-                saveSettings = False
+                if game_input == '':
+                    game_input = 1
+                data[0] = str(game_input) + '\n'
+                save_settings = False
 
             case '2':
-                userInput = input('How many discards should the next game have? ')
-                gameInput = validatedInput(userInput)
+                user_input = input('How many discards should the next game have? ')
+                game_input = validate_input(user_input)
                 # Replaces null value with 1 specifically for this menu.
-                if gameInput == '':
-                    gameInput = 1
-                data[1] = str(gameInput) + '\n'
-                saveSettings = False
+                if game_input == '':
+                    game_input = 1
+                data[1] = str(game_input) + '\n'
+                save_settings = False
 
             case '3':
-                userInput = input('How many cards should your hand hold? ')
-                gameInput = validatedInput(userInput)
+                user_input = input('How many cards should your hand hold? ')
+                game_input = validate_input(user_input)
                 # Replaces null value with 1 specifically for this menu.
-                if gameInput == '':
-                    gameInput = 1
-                data[2] = str(gameInput) + '\n'
-                saveSettings = False
+                if game_input == '':
+                    game_input = 1
+                data[2] = str(game_input) + '\n'
+                save_settings = False
 
             case '4':
-                writeSave('save.txt', data)
-                saveSettings = True
+                write_file('save.txt', data)
+                save_settings = True
+
             case _:
-                saveSettings = False
-                
-# Main loop, mostly for menu purposes.
+                save_settings = False
+
 def main():
-    saveFileGeneration()
-    gameLoop = True
-    while gameLoop:
-        menuOptions = {
+    """
+    Main loop, only valid way to start the program and contains the main menu.
+    Access the game, game settings, credits menu, and exit from here.
+    """
+    save_generation()
+    game_loop = True
+    while game_loop:
+        menu_options = {
             '1': 'Play',
             '2': 'Settings',
             '3': 'Credits',
             '4': 'Quit'
         }
-        clearScreen()
+        clear_screen()
         print('Welcome to Joculator\n')
-        menuDisplay(menuOptions)
-        userInput = input('Choose an option: ')
-        gameInput = validatedInput(userInput, menuOptions)
+        menu_display(menu_options)
+        user_input = input('Choose an option: ')
+        game_input = validate_input(user_input, menu_options)
 
-        match gameInput:
+        match game_input:
             case '1':
                 playGame()
 
@@ -83,21 +94,20 @@ def main():
                 settings()
 
             case '3':
-                clearScreen()
-                creditsMenu = {
+                clear_screen()
+                credits_menu = {
                     'Joculator, based on the game "Balatro"': '',
                     'Balatro by': 'LocalThunk',
                     'Programming by': 'Matthew Pulver',
                     'Planning by': 'Matthew Pulver'
                 }
-                menuDisplay(creditsMenu)
-                userInput = input('Press enter to continue...')
-                validatedInput(userInput)
+                menu_display(credits_menu)
+                user_input = input('Press enter to continue...')
+                validate_input(user_input)
 
-                
             case '4':
-                clearScreen()
-                gameLoop = False
+                clear_screen()
+                game_loop = False
 
             case _:
                 continue
@@ -105,4 +115,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
