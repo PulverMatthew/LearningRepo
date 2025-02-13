@@ -1,4 +1,6 @@
-from util import validatedInput, checkSave, readSave, writeSave, saveFileGeneration, clearScreen, menuDisplay
+from util import validatedInput, readSave, writeSave, saveFileGeneration, clearScreen, menuDisplay
+from cards import pokerCard, pokerDeck
+from game import playGame
 import os
 # Settings menu, allows user to define variables for gameplay.
 def settings():
@@ -8,7 +10,9 @@ def settings():
     # Opens save file in write mode. Loops until player has confirmed every setting changed.
     while not saveSettings:
         clearScreen()
-        print(data)
+        for i, entry in enumerate(data):
+            print(entry.strip(), end = ', ')
+        print()
         menuOptions = {
             '1': 'Number of Hands',
             '2': 'Number of Discards',
@@ -17,29 +21,33 @@ def settings():
             }
         print('Game Options:\n')
         menuDisplay(menuOptions)
-        gameInput = validatedInput('Choose an option: ', menuOptions.keys())
+        userInput = input('Choose an option: ')
+        gameInput = validatedInput(userInput, menuOptions)
         
         match gameInput:
             case '1':
-                gameInput = validatedInput('How many hands should the next game have? ')
+                userInput = input('How many hands should the next game have? ')
+                gameInput = validatedInput(userInput)
                 # Replaces null value with 1 specifically for this menu.
-                if gameInput == None:
+                if gameInput == '':
                     gameInput = 1
                 data[0] = str(gameInput) + '\n'
                 saveSettings = False
 
             case '2':
-                gameInput = validatedInput('How many discards should the next game have? ')
+                userInput = input('How many discards should the next game have? ')
+                gameInput = validatedInput(userInput)
                 # Replaces null value with 1 specifically for this menu.
-                if gameInput == None:
+                if gameInput == '':
                     gameInput = 1
                 data[1] = str(gameInput) + '\n'
                 saveSettings = False
 
             case '3':
-                gameInput = validatedInput('How many cards should your hand hold? ')
+                userInput = input('How many cards should your hand hold? ')
+                gameInput = validatedInput(userInput)
                 # Replaces null value with 1 specifically for this menu.
-                if gameInput == None:
+                if gameInput == '':
                     gameInput = 1
                 data[2] = str(gameInput) + '\n'
                 saveSettings = False
@@ -50,13 +58,6 @@ def settings():
             case _:
                 saveSettings = False
                 
-# Game loop, shows the main game logic. 
-def playGame():
-    clearScreen()
-    # Checks to see if the player has played the game before.
-    hasPreviousGame = checkSave(3)
-    pass
-
 # Main loop, mostly for menu purposes.
 def main():
     saveFileGeneration()
@@ -71,22 +72,33 @@ def main():
         clearScreen()
         print('Welcome to Joculator\n')
         menuDisplay(menuOptions)
-        gameInput = validatedInput('Choose an option: ', menuOptions.keys())
+        userInput = input('Choose an option: ')
+        gameInput = validatedInput(userInput, menuOptions)
+
         match gameInput:
             case '1':
                 playGame()
+
             case '2':
                 settings()
+
             case '3':
                 clearScreen()
-                print('Joculator, based on the hit game Balatro\n')
-                print('Balatro by: LocalThunk')
-                print('Programming by: Matthew Pulver')
-                print('Planning by: Matthew Pulver')
-                validatedInput('Press enter to continue...')
+                creditsMenu = {
+                    'Joculator, based on the game "Balatro"': '',
+                    'Balatro by': 'LocalThunk',
+                    'Programming by': 'Matthew Pulver',
+                    'Planning by': 'Matthew Pulver'
+                }
+                menuDisplay(creditsMenu)
+                userInput = input('Press enter to continue...')
+                validatedInput(userInput)
+
+                
             case '4':
                 clearScreen()
                 gameLoop = False
+
             case _:
                 continue
 
