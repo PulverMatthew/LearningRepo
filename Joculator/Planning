@@ -14,3 +14,4 @@ Basic game flow:
     5. Steps 3-4 loop based on number of plays/discards allowed until score value is obtained or 0 hands.
     6. Loop the game flow with higher score value requirement.
 
+
