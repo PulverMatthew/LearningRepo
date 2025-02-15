@@ -109,6 +109,9 @@ class PokerDeck:
         tracks the length of the deck.
         """
         self.card_deck = []
+        for suit in PokerCard.suits:
+            for rank in PokerCard.ranks:
+                self.card_deck.append(PokerCard(suit, rank))
         self.card_count = len(self.card_deck)
     def default_deck(self):
         """
