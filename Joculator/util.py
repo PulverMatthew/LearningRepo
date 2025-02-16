@@ -104,11 +104,16 @@ def save_generation():
     except FileNotFoundError:
         clear_screen()
         print('No save file found. Making save file.')
-        validate_input('Press enter to continue...')
+        input('Press enter to continue...')
         data = [
             '4\n',  # 1. Number of Hands
-            '4\n',  # 2. Number of Discards
+            '3\n',  # 2. Number of Discards
             '7\n',  # 3. Hand Size
+            'Jack Joculator\n', # 4. Name
+            '1\n', # 5. Current ante
+            '1\n', # 6. Current round
+            '4\n', # 7. Current Money
+            'Default\n', # 8. Chosen card deck
             'False\n'  # Has a game already been started?
         ]
         write_file('save.txt', data)

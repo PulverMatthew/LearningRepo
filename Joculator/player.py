@@ -26,17 +26,19 @@ class Player:
         # Strip all lines from the file at once
         data = [line.strip() for line in read_file('save.txt')]
         # Unpack the values for clarity
-        hands_str, discards_str, hand_size_str, file_name, ante_str, round_str, money_str = data
+        hands_str, discards_str, hand_size_str, player_name, ante_str, round_str, money_str, deck_str = data
         # Initializes save data from the save file.
         self.hands = int(hands_str)
         self.discards = int(discards_str)
         self.hand_size = int(hand_size_str)
-        self.name = str(file_name)
+        self.name = str(player_name)
         self.ante_base = 200 * math.exp2(int(ante_str))
+        self.deck = PokerDeck()
+        self.deck.card_deck = deck_str
+
         self.round = int(round_str)
         self.money = int(money_str)
         self.score = int(0)
-        self.deck = PokerDeck()
         self.hand = []
 
 class Blind():
