@@ -32,14 +32,14 @@ def test_poker_card_identity():
     card1 = PokerCard('Hearts', 'A')
     assert (card1.suit, card1.rank, card1.chips, card1.is_face) == ('Hearts', 'A', 11, False)
 
-    card2 = PokerCard('Spades', 10)
-    assert (card2.suit, card2.rank, card2.chips, card2.is_face) == ('Spades', 10, 10, False)
+    card2 = PokerCard('Spades', '10')
+    assert (card2.suit, card2.rank, card2.chips, card2.is_face) == ('Spades', '10', 10, False)
 
     card3 = PokerCard('Diamonds', 'J')
     assert (card3.suit, card3.rank, card3.chips, card3.is_face) == ('Diamonds', 'J', 10, True)
 
-    card4 = PokerCard('Clubs', 7)
-    assert (card4.suit, card4.rank, card4.chips, card4.is_face) == ('Clubs', 7, 7, False)
+    card4 = PokerCard('Clubs', '7')
+    assert (card4.suit, card4.rank, card4.chips, card4.is_face) == ('Clubs', '7', 7, False)
 
 def test_poker_card_setters():
     """
@@ -55,7 +55,7 @@ def test_poker_card_setters():
     card1.set_suit('Diamonds')
     assert card1.suit == 'Diamonds'
 
-    card2 = PokerCard('Spades', 10)
+    card2 = PokerCard('Spades', '10')
     card2.set_rank('A')
     assert card2.rank == 'A'
 
@@ -66,10 +66,10 @@ def test_poker_card_setters():
     card3.set_rank('J')
     assert card3.chips == 200
 
-    card4 = PokerCard('Clubs', 7)
+    card4 = PokerCard('Clubs', '7')
     card4.set_face(True)
     assert card4.is_face is True
-    card4.set_rank(10)
+    card4.set_rank('10')
     assert card4.is_face is True
 
 def test_poker_deck():
@@ -77,19 +77,30 @@ def test_poker_deck():
     Tests PokerDeck object functionality.
     Makes sure that the default deck actually generates
     a proper playing card deck, containing all of the cards
-    of a correct suit and rank.
+    of a correct suit and rank.py
     Checks that the length of the deck is correct.
     """
+    # Testing default deck with all suit/rank pairs.
     default_deck = PokerDeck()
-    suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+    suits = ['Clubs', 'Spades', 'Hearts', 'Diamonds']
     ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-
-    # Generate all suit/rank pairs.
-    deck = [(suit, rank) for suit in suits for rank in ranks]
+    default_deck_check = [(suit, rank) for suit in suits for rank in ranks]
     for card in default_deck.card_deck:
-        assert (card.suit, card.rank) in deck
-        deck.remove((card.suit, card.rank))
-    assert len(deck) == 52
+        assert (card.suit, card.rank) in default_deck_check
+    assert len(default_deck.card_deck) == default_deck.card_count
+    assert default_deck.card_count == len(default_deck_check)
+
+    # Testing oops spades hearts deck with all spades and hearts.
+    oops_deck = PokerDeck()
+    oops_deck.set_deck(oops_deck.oops_spade_hearts_deck())
+    suits = ['Spades', 'Hearts']
+    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+    oops_deck_check = [(suit, rank) for suit in suits for rank in ranks for _ in range(2)]
+    for card in oops_deck.card_deck:
+        assert (card.suit, card.rank) in oops_deck_check
+    assert len(oops_deck.card_deck) == oops_deck.card_count
+    assert oops_deck.card_count == len(oops_deck_check)
+
 
 test_utility_functions()
 test_poker_card_identity()

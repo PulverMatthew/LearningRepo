@@ -12,14 +12,17 @@ class PokerCard:
     # Valid poker suits
     suits = ['Clubs', 'Spades', 'Hearts', 'Diamonds']
     # Valid poker ranks
-    ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'A', 'J', 'Q', 'K']
+    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'A', 'J', 'Q', 'K']
     def __init__(self, suit, rank):
         """
         Initializes the PokerCard object with a suit, rank, and chip value.
 
         Parameters:
-            suit (str): Specifies the suit of the playing card.
-            rank (int/str): Specifies the rank of the playing card.
+            suit (str) (): Specifies the suit of the playing card.
+            rank (str): Specifies the rank of the playing card.
+            'Clubs', 'Spades', 'Hearts', 'Diamonds'
+            '2', '3', '4', '5', '6', '7', '8', '9', '10', 'A', 'J', 'Q', 'K'
+
 
         Raises: ValueError if the suit or rank is not a valid suit or rank.
         """
@@ -34,10 +37,12 @@ class PokerCard:
         self.is_modified = False
         # Chip value can be intuited based on rank value. If a face card, then 10. If ace, then 11.
         self.chips = rank
-        if str(self.chips) in ('J', 'Q', 'K'):
+        if self.chips in ('J', 'Q', 'K'):
             self.chips = 10
-        elif str(self.chips) in ('A'):
+        elif self.chips in ('A'):
             self.chips = 11
+        else:
+            self.chips = int(self.rank)
         # If the rank is J, Q, or K, then set is_face to true.
         self.is_face = False
         if str(self.rank) in ('J', 'Q', 'K'):
@@ -64,7 +69,7 @@ class PokerCard:
         If the rank is an ace, change the chips to 11.
         
         Parameters:
-            rank (int,str): rank which a PokerCard object is being changed to.
+            rank (str): rank which a PokerCard object is being changed to.
 
         Raises: ValueError if rank is invalid.
         """
@@ -126,6 +131,21 @@ class PokerDeck:
         for suit in PokerCard.suits:
             for rank in PokerCard.ranks:
                 deck.append(PokerCard(suit, rank))
+        return deck
+    def oops_spade_hearts_deck(self):
+        """
+        Generates a deck similar to the default deck,
+        but has 2 copies of spade and heart suite cards.
+        Contains 52 cards in the deck.
+
+        Returns:
+            deck: A list containing every generated poker card.
+        """
+        deck = []
+        for _ in range(2):
+            for rank in PokerCard.ranks:
+                deck.append(PokerCard('Spades', rank))
+                deck.append(PokerCard('Hearts', rank))
         return deck
     def set_deck(self, deck):
         """
