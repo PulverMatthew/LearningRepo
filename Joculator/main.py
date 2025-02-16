@@ -2,7 +2,7 @@
 Main module of the game. Contains functions for settings
 and for the main menu. 
 """
-from util import validate_input, read_file, write_file, save_generation, clear_screen, menu_display
+from util import validate_input, save_generation, clear_screen, menu_display
 from game import play_game
 from settings import settings
 

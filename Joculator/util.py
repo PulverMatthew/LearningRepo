@@ -103,8 +103,6 @@ def save_generation():
         read_file('save.txt')
     except FileNotFoundError:
         clear_screen()
-        print('No save file found. Making save file.')
-        input('Press enter to continue...')
         data = [
             '4\n',  # 1. Number of Hands
             '3\n',  # 2. Number of Discards
