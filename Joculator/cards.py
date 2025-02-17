@@ -3,6 +3,7 @@ cards.py: Contains classes for objects in Joculator related to playing cards,
 such as numbered cards, face cards, and aces. Will implement Jokers,
 and other cards found in Balatro later.
 """
+import random
 class PokerCard:
     """
     The PokerCard object represents a standard playing card in a playing card deck.
@@ -134,12 +135,16 @@ class PokerDeck:
         self.card_count = len(new_deck)
     def shuffle(self):
         """
-        Setter method which shuffles the PokerDeck object's list
-        using the Fisher-Yates shuffling algorithm.
+        Method which shuffles the already selected deck in PokerDeck object. 
+        Implementation of the Fisher-Yates shuffle algorithm.
         """
-        modifiedDeck = []
+        modified_deck = self.card_deck
         for i in range(self.card_count-1, 0, -1):
-
+            j = random.randint(0, i)
+            swap = modified_deck[i]
+            modified_deck[i] = modified_deck[j]
+            modified_deck[j] = swap
+        self.card_deck = modified_deck
 
     def default_deck(self):
         """
