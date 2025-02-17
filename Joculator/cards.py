@@ -118,6 +118,15 @@ class PokerDeck:
             for rank in PokerCard.ranks:
                 self.card_deck.append(PokerCard(suit, rank))
         self.card_count = len(self.card_deck)
+    def set_deck(self, deck):
+        """
+        Setter method for the deck which sets the type of deck used.
+        
+        Parameters:
+            deck (list): The type of deck being changed to.
+        """
+        self.card_deck = deck
+        self.card_count = len(deck)
     def default_deck(self):
         """
         Generates the default deck of playing cards.
@@ -147,13 +156,4 @@ class PokerDeck:
                 deck.append(PokerCard('Spades', rank))
                 deck.append(PokerCard('Hearts', rank))
         return deck
-    def set_deck(self, deck):
-        """
-        Setter method for the deck which sets the type of deck used.
-        
-        Parameters:
-            deck (list): The type of deck being changed to.
-        """
-        self.card_deck = deck
-        self.card_count = len(deck)
       

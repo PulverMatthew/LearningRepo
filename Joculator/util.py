@@ -17,16 +17,15 @@ def validate_input(message, valid_options=None):
         message (str): The input provided by the user.
         valid_options (list, optional): A list of valid options. If None, any message is valid.
 
+    Raises: 
+        ValueError: If the value of the input is not allowed.
+        
     Returns:
         str: The original message if it is valid.
     """
     try:
         if valid_options is None or message in valid_options:
             return message
-    except KeyboardInterrupt:
-        clear_screen()
-        print("Input was cancelled by the user. Exiting.")
-        exit(0)
     except ValueError as ve:
         print(f"Input error: {ve}")
 
