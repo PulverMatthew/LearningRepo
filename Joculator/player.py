@@ -1,6 +1,7 @@
 """
 The player module. Contains the player class, which regulates information related to the player. 
 """
+import random
 import math
 from cards import PokerDeck
 from util import read_file, menu_display, validate_input, clear_screen
@@ -26,19 +27,20 @@ class Player:
         # Strip all lines from the file at once
         data = [line.strip() for line in read_file('save.txt')]
         # Unpack the values for clarity
-        hands_str, discard_str, hand_size_str, name, ante_str, round_str, money_str, deck_str = data
+        hands_str, discard_str, hand_size_str, name, ante_str, round_str, money_str, deck_str, seed_str = data
         # Initializes save data from the save file.
         self.hands = int(hands_str)
         self.discards = int(discard_str)
         self.hand_size = int(hand_size_str)
         self.name = str(name)
         self.ante_base = 200 * math.exp2(int(ante_str))
-        self.deck = PokerDeck()
-        self.deck.card_deck = deck_str
-
         self.round = int(round_str)
         self.money = int(money_str)
-        self.score = int(0)
+        self.deck = PokerDeck()
+        self.deck.set_deck(deck_str)
+        self.seed = tuple(seed_str)
+        random.seed(self.seed)
+        self.score = 0
         self.hand = []
 
 class Blind():

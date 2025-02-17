@@ -123,10 +123,24 @@ class PokerDeck:
         Setter method for the deck which sets the type of deck used.
         
         Parameters:
-            deck (list): The type of deck being changed to.
+            deck (str): A string representing a deck to change to.
         """
-        self.card_deck = deck
-        self.card_count = len(deck)
+        match deck:
+            case 'Default':
+                new_deck = self.default_deck()
+            case 'Oops':
+                new_deck = self.oops_spade_hearts_deck()
+        self.card_deck = new_deck
+        self.card_count = len(new_deck)
+    def shuffle(self):
+        """
+        Setter method which shuffles the PokerDeck object's list
+        using the Fisher-Yates shuffling algorithm.
+        """
+        modifiedDeck = []
+        for i in range(self.card_count-1, 0, -1):
+
+
     def default_deck(self):
         """
         Generates the default deck of playing cards.

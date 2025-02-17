@@ -2,7 +2,6 @@
 Settings module, allows settings to be called from anywhere in the program without an ImportError.
 """
 from util import menu_display, read_file, write_file, clear_screen, validate_input
-
 def settings():
     """
     Settings function which allows the user to modify the save file containing game settings.
@@ -34,7 +33,8 @@ def settings():
             '1': 'Name',
             '2': 'Deck Style',
             '3': 'Difficulty',
-            '4': 'Save Settings'
+            '4': 'Seed',
+            '5': 'Save Settings'
         }
         print('Game Options:\n')
         menu_display(menu_options)
@@ -98,6 +98,10 @@ def settings():
                     case _:
                         continue
             case '4':
+                user_input = input('What seed do you want? ')
+                game_input = validate_input(user_input)
+                data[9] = tuple(game_input)
+            case '5':
                 write_file('save.txt', data)
                 save_settings = True
 

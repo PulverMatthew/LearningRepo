@@ -5,7 +5,6 @@ and for the main menu.
 from util import validate_input, save_generation, clear_screen, menu_display
 from game import play_game
 from settings import settings
-
 def main():
     """
     Main loop, only valid way to start the program and contains the main menu.

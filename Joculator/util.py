@@ -7,7 +7,7 @@ util.py: provides utility functions for the rest of Joculator:
     menu_display provides a readable alternative for making menu options.
 """
 import os
-
+import random
 # Validates given input against given menu options. Can work without menu options.
 def validate_input(message, valid_options=None):
     """
@@ -102,6 +102,8 @@ def save_generation():
         read_file('save.txt')
     except FileNotFoundError:
         clear_screen()
+        random.seed()
+        current_seed = random.getstate()
         data = [
             '4\n',  # 1. Number of Hands
             '3\n',  # 2. Number of Discards
@@ -111,7 +113,8 @@ def save_generation():
             '1\n', # 6. Current round
             '4\n', # 7. Current Money
             'Default\n', # 8. Chosen card deck
-            'False\n'  # Has a game already been started?
+            'False\n',  # 9 Has a game already been started?
+            f'{current_seed}' # 10 What is the current seed? Defaults to system time
         ]
         write_file('save.txt', data)
 

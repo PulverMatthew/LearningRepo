@@ -1,9 +1,0 @@
-4
-3
-7
-Jack Joculator
-1
-1
-4
-Default
-True
