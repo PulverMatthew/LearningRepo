@@ -13,7 +13,22 @@ class PokerCard:
     # Valid poker suits
     suits = ['Clubs', 'Spades', 'Hearts', 'Diamonds']
     # Valid poker ranks
-    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'A', 'J', 'Q', 'K']
+    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+    rank_hierarchy_lookup = {
+            '2': 2,
+            '3': 3,
+            '4': 4,
+            '5': 5,
+            '6': 6,
+            '7': 7,
+            '8': 8,
+            '9': 9,
+            '10': 10,
+            'J': 11,
+            'Q': 12,
+            'K': 13,
+            'A': 14
+        }
     def __init__(self, suit, rank):
         """
         Initializes the PokerCard object with a suit, rank, and chip value.
@@ -141,9 +156,41 @@ class PokerDeck:
         modified_deck = self.card_deck
         for i in range(self.card_count-1, 0, -1):
             j = random.randint(0, i)
-            swap = modified_deck[i]
-            modified_deck[i] = modified_deck[j]
-            modified_deck[j] = swap
+            modified_deck[i], modified_deck[j] = modified_deck[j], modified_deck[i]
+        self.card_deck = modified_deck
+
+    def sort(self):
+        """
+        Sorting method implementing a hybrid bucket sort/selection sort algorithm.
+        First, sublists are made from the original list sorted by suit.
+        Second, each sublist is selection sorted based on rank value hierarchy.
+        Finally, append a new list in suit order and set PokerDeck's card deck list to
+        the new list.
+        """
+        buckets = {}
+        modified_deck = self.card_deck
+        # Put same-suit cards in sublists.
+        for card in modified_deck:
+            if card.suit not in buckets:
+                buckets[card.suit] = []
+            buckets[card.suit].append(card)
+        # For every sublist, selection sort the sublist by rank.
+        for card_list in buckets.values():
+            for i in range(len(card_list) - 1):
+                minimum_index = i
+                for j in range(i + 1, len(card_list)):
+                    compare_1 = PokerCard.rank_hierarchy_lookup[card_list[j].rank]
+                    compare_2 = PokerCard.rank_hierarchy_lookup[card_list[minimum_index].rank]
+                    if compare_1 < compare_2:
+                        minimum_index = j
+                card_list[i], card_list[minimum_index] = card_list[minimum_index], card_list[i]
+        modified_deck = []
+        # Append the sublists in suit order.
+        for suit in PokerCard.suits:
+            if suit in buckets:
+                modified_deck += buckets[suit]
+        for card in modified_deck:
+            print(card.suit)
         self.card_deck = modified_deck
 
     def default_deck(self):
@@ -170,9 +217,10 @@ class PokerDeck:
             deck: A list containing every generated poker card.
         """
         deck = []
-        for _ in range(2):
-            for rank in PokerCard.ranks:
+        for rank in PokerCard.ranks:
+            for _ in range(2):
                 deck.append(PokerCard('Spades', rank))
+        for rank in PokerCard.ranks:
+            for _ in range(2):
                 deck.append(PokerCard('Hearts', rank))
         return deck
-      

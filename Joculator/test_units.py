@@ -92,7 +92,7 @@ def test_poker_deck():
 
     # Testing oops spades hearts deck with all spades and hearts.
     oops_deck = PokerDeck()
-    oops_deck.set_deck(oops_deck.oops_spade_hearts_deck())
+    oops_deck.set_deck('Oops')
     suits = ['Spades', 'Hearts']
     ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
     oops_deck_check = [(suit, rank) for suit in suits for rank in ranks for _ in range(2)]
@@ -101,6 +101,25 @@ def test_poker_deck():
     assert len(oops_deck.card_deck) == oops_deck.card_count
     assert oops_deck.card_count == len(oops_deck_check)
 
+    # Testing shuffle and sorting algorithm
+
+    # Default Deck
+    default_deck_original = PokerDeck()
+    default_deck_modified = PokerDeck()
+    default_deck_modified.shuffle()
+    default_deck_modified.sort()
+    for i in range(default_deck.card_count):
+        assert (default_deck_original.card_deck[i].suit, default_deck_original.card_deck[i].rank) == (default_deck_modified.card_deck[i].suit, default_deck_modified.card_deck[i].rank)
+
+    # Oops Deck
+    oops_original = PokerDeck()
+    oops_original.set_deck('Oops')
+    oops_modified = PokerDeck()
+    oops_modified.set_deck('Oops')
+    oops_modified.shuffle()
+    oops_modified.sort()
+    for i in range(oops_original.card_count):
+        assert (oops_original.card_deck[i].suit, oops_original.card_deck[i].rank) == (oops_modified.card_deck[i].suit, oops_modified.card_deck[i].rank)
 
 test_utility_functions()
 test_poker_card_identity()
