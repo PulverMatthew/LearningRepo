@@ -36,4 +36,4 @@ def play_game():
                 data[8] = 'True\n'
                 write_file('save.txt', data)
                 clear_screen()
-    
+    player = Player()

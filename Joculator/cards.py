@@ -148,51 +148,15 @@ class PokerDeck:
                 new_deck = self.oops_spade_hearts_deck()
         self.card_deck = new_deck
         self.card_count = len(new_deck)
-    def shuffle(self):
+    def deal(self):
         """
-        Method which shuffles the already selected deck in PokerDeck object. 
-        Implementation of the Fisher-Yates shuffle algorithm.
+        Getter method for the deck which returns the first card in a deck.
+        
+        Returns:
+            selected_card(PokerCard): A card selected from the start of the
+            PokerDeck.card_deck list.
         """
-        modified_deck = self.card_deck
-        for i in range(self.card_count-1, 0, -1):
-            j = random.randint(0, i)
-            modified_deck[i], modified_deck[j] = modified_deck[j], modified_deck[i]
-        self.card_deck = modified_deck
-
-    def sort(self):
-        """
-        Sorting method implementing a hybrid bucket sort/selection sort algorithm.
-        First, sublists are made from the original list sorted by suit.
-        Second, each sublist is selection sorted based on rank value hierarchy.
-        Finally, append a new list in suit order and set PokerDeck's card deck list to
-        the new list.
-        """
-        buckets = {}
-        modified_deck = self.card_deck
-        # Put same-suit cards in sublists.
-        for card in modified_deck:
-            if card.suit not in buckets:
-                buckets[card.suit] = []
-            buckets[card.suit].append(card)
-        # For every sublist, selection sort the sublist by rank.
-        for card_list in buckets.values():
-            for i in range(len(card_list) - 1):
-                minimum_index = i
-                for j in range(i + 1, len(card_list)):
-                    compare_1 = PokerCard.rank_hierarchy_lookup[card_list[j].rank]
-                    compare_2 = PokerCard.rank_hierarchy_lookup[card_list[minimum_index].rank]
-                    if compare_1 < compare_2:
-                        minimum_index = j
-                card_list[i], card_list[minimum_index] = card_list[minimum_index], card_list[i]
-        modified_deck = []
-        # Append the sublists in suit order.
-        for suit in PokerCard.suits:
-            if suit in buckets:
-                modified_deck += buckets[suit]
-        for card in modified_deck:
-            print(card.suit)
-        self.card_deck = modified_deck
-
+        return self.card_deck.pop(0)
     def default_deck(self):
         """
         Generates the default deck of playing cards.

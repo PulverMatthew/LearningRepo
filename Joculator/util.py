@@ -8,7 +8,98 @@ util.py: provides utility functions for the rest of Joculator:
 """
 import os
 import random
-# Validates given input against given menu options. Can work without menu options.
+from cards import PokerCard
+def shuffle(original_deck):
+    """
+    Method which shuffles the selected deck.
+    Implementation of the Fisher-Yates shuffle algorithm.
+
+    Parameters: original_deck (lst): An unshuffled list.
+
+    Returns: original_deck (lst): A list which has been shuffled.
+    """
+    original_deck_range = len(original_deck)
+    for i in range(original_deck_range-1, 0, -1):
+        j = random.randint(0, i)
+        original_deck[i], original_deck[j] = original_deck[j], original_deck[i]
+    return original_deck
+
+def sort(original_deck):
+    """
+    Sorting method implementing a hybrid bucket sort/selection sort algorithm.
+    First, sublists are made from the original list sorted by suit.
+    Second, each sublist is selection sorted based on rank value hierarchy.
+    Finally, append a new list in suit order and return the sorted
+
+    Parameters: original_deck (lst): A list to be sorted.
+
+    Returns: modified_deck (lst): A list which is sorted.
+    """
+    buckets = {}
+    # Put same-suit cards in sublists.
+    for card in original_deck:
+        if card.suit not in buckets:
+            buckets[card.suit] = []
+        buckets[card.suit].append(card)
+    # For every sublist, selection sort the sublist by rank.
+    for card_list in buckets.values():
+        for i in range(len(card_list) - 1):
+            minimum_index = i
+            for j in range(i + 1, len(card_list)):
+                compare_1 = PokerCard.rank_hierarchy_lookup[card_list[j].rank]
+                compare_2 = PokerCard.rank_hierarchy_lookup[card_list[minimum_index].rank]
+                if compare_1 < compare_2:
+                    minimum_index = j
+            card_list[i], card_list[minimum_index] = card_list[minimum_index], card_list[i]
+    modified_deck = []
+    # Append the sublists in suit order.
+    for suit in PokerCard.suits:
+        if suit in buckets:
+            modified_deck += buckets[suit]
+    for card in modified_deck:
+        print(card.suit)
+    return modified_deck
+def hand_evaluator(played_hand):
+    """
+    Evaluates identity of the given played hand. 
+    Evaluates mult value and chip value based on evaluated
+    hand, evaluates all modifiers as well.
+    Animates evaluation process for suspense.
+    Adds together mult value and returns added score
+    """
+    # Entry is as follows: Name:{mult, chips}
+    hand_score_lookup = {
+        'High': {1, 5},
+        'Pair': {2, 5},
+        '2pair': {2, 10},
+        '3kind': {3, 15},
+        'straight': {5, 20},
+        'flush': {5, 25},
+        'fullhouse': {6, 30},
+        '4kind': {10, 50},
+        'straightflush': {15, 100},
+        'royalflush': {20, 100}
+    }
+    # Flush: same suit as first, 5 cards in deck
+    check_suit = played_hand[0].suit
+    same_suit = 0
+    for card in played_hand:
+        if card.suit == check_suit:
+            same_suit += 1
+    if same_suit == 5:
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
 def validate_input(message, valid_options=None):
     """
     Validates the provided input message against the valid_options.

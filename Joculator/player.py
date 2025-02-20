@@ -4,7 +4,7 @@ The player module. Contains the player class, which regulates information relate
 import random
 import math
 from cards import PokerDeck
-from util import read_file, menu_display, validate_input, clear_screen
+from util import read_file, menu_display, validate_input, clear_screen, shuffle
 class Player:
     """
     The player class, represents the player and all information related to the player. 
@@ -53,10 +53,9 @@ class Blind():
         methods below.
         difficulty (int): What ante is this blind on? 
     """
-    def __init__(self, difficulty):
+    def __init__(self):
         self.score_requirement = 100
         self.blind_type = 'Default'
-        self.difficulty = difficulty
         self.reward = 1
 
     def small_blind(self):
@@ -115,11 +114,49 @@ class Blind():
                 blind_decision = False
         return blind_decision
 
-    def challenge(self, score, hands, discards):
-        while score < self.score_requirement and hands > 0:
+    def challenge(self, player):
+        """
+        The challenge method is a method which calls a procedural
+        game loop challenging the player to beat the score requirement
+        with the number of hands given to them.
+
+        Parameters:
+            player: The player object, representing player data.
+        Returns:
+            win_state: Boolean representing if the game was won or not. 
+        """
+        shuffle(player.deck.card_deck)
+        while player.score < self.score_requirement and player.hands > 0:
             clear_screen()
+            selected_cards = []
+            for _ in range(player.hand_size - len(player.hand)):
+                player.deck.deal()
             print(f'{self.blind_type}: Score at least {self.score_requirement}')
+            # Display selected cards on top of the player's hand. Update every turn.
+            for card in selected_cards:
+                print(f'{card.suit} {card.rank}\n', end=' ')
+            for card in player.hand:
+                print(f'{card.suit} {card.rank}\n', end=' ')
             display = {
-                '1':'Play Cards',
-                '2':'Discard Cards',
+                'a': 'Play',
+                'b': 'Discard'
             }
+            valid_choices = []
+            for i in len(player.hand):
+                valid_choices.append(str(i))
+            for i in list(display.keys):
+                valid_choices.append(str(i))
+            menu_display(display)
+            print('Input index to select a card\n')
+            user_input = input('Choose the index of a card or the options above: ')
+            game_input = validate_input(user_input, valid_choices)
+            index = int(game_input)
+            if game_input.isdigit():
+                if index < len(player.hand):
+                    card = player.hand.pop(index)
+                    selected_cards.append(card)
+            match game_input:
+                case 'a':
+                    pass
+                case 'b':
+                    pass
