@@ -24,7 +24,7 @@ def shuffle(original_deck):
         original_deck[i], original_deck[j] = original_deck[j], original_deck[i]
     return original_deck
 
-def sort(original_deck):
+def sort_suit(original_deck):
     """
     Sorting method implementing a hybrid bucket sort/selection sort algorithm.
     First, sublists are made from the original list sorted by suit.
@@ -59,6 +59,25 @@ def sort(original_deck):
     for card in modified_deck:
         print(card.suit)
     return modified_deck
+def sort_rank(original_deck):
+    """
+    Selection sort which sorts by rank irrespective of suit.
+    Parameters:
+        original_deck (lst): The original deck to be sorted.
+
+    Returns:
+        original_deck (lst): The original deck in rank-sorted form.
+    """
+    original_deck = []
+    for i in range(len(original_deck) - 1):
+        minimum_index = i
+        for j in range(i + 1, len(original_deck)):
+            compare_1 = PokerCard.rank_hierarchy_lookup[original_deck[j].rank]
+            compare_2 = PokerCard.rank_hierarchy_lookup[original_deck[minimum_index].rank]
+            if compare_1 < compare_2:
+                minimum_index = j
+        original_deck[i], original_deck[minimum_index] = original_deck[minimum_index], original_deck[i]
+    return original_deck
 def hand_evaluator(played_hand):
     """
     Evaluates identity of the given played hand. 
@@ -66,39 +85,118 @@ def hand_evaluator(played_hand):
     hand, evaluates all modifiers as well.
     Animates evaluation process for suspense.
     Adds together mult value and returns added score
+
+    Parameters:
+        played_hand (lst): List of cards selected by the player.
+    Returns:
+        eval_data (list): A list of 2 values: mult and chips in order.
     """
     # Entry is as follows: Name:{mult, chips}
     hand_score_lookup = {
-        'High': {1, 5},
-        'Pair': {2, 5},
-        '2pair': {2, 10},
-        '3kind': {3, 15},
-        'straight': {5, 20},
-        'flush': {5, 25},
-        'fullhouse': {6, 30},
-        '4kind': {10, 50},
-        'straightflush': {15, 100},
-        'royalflush': {20, 100}
+        'high': [1, 5],
+        'pair': [2, 5],
+        '2pair': [2, 10],
+        '3kind': [3, 15],
+        'straight': [5, 20],
+        'flush': [5, 25],
+        'fullhouse': [5,35],
+        '4kind': [10, 50],
+        'straightflush': [20,100],
+        'flushhouse': [25, 100],
+        '5kind': [25, 100],
+        'flush5': [50, 100]
     }
+    # Card patterns for which hand matches.
+    hand_descriptors = []
+    # Play what cards are a part of the hand.
+    active_cards = []
+
+    # Straight: Sort the list by rank, and check if each rank is consecutive. No low aces.
+    sort_rank(played_hand)
+    consecutive_ranks = 0
+    for i in enumerate(played_hand):
+        if PokerCard.rank_hierarchy_lookup[played_hand.rank[i]] - PokerCard.rank_hierarchy_lookup[played_hand.rank[i+1]] == 1:
+            consecutive_ranks += 1
+    if consecutive_ranks == 4:
+        hand_descriptors[0] = 'straight'
+        active_cards = played_hand
+    # Pair, 2 Pair, 3Kind, 4Kind, Full House:
+    buckets = {}
+    for card in played_hand:
+        if card.rank not in buckets:
+            buckets[card.rank] = []
+        buckets[card.rank].append(card)
+    # Corresponds to: ["2 of a kind", "3 of a kind", "4 of a kind", "5 of a kind"]
+    of_kind = [0, 0, 0, 0]
+    for card_list in buckets.values():
+        match len(card_list):
+            case 2:
+                of_kind[0] += 1
+                active_cards += card_list
+            case 3:
+                of_kind[1] += 1
+                active_cards += card_list
+            case 4:
+                of_kind[2] += 1
+                active_cards += card_list
+
+            case 5:
+                of_kind[3] += 1
+                active_cards += card_list
+
+    match of_kind:
+        # Single pair found
+        case [1,0,0,0]:
+            hand_descriptors[0] = 'pair'
+        # Two pairs found
+        case [2,0,0,0]:
+            hand_descriptors[0] = '2pair'
+        # One 3-kind found
+        case [0,1,0,0]:
+            hand_descriptors[0] = '3kind'
+        # One pair, and one 3-kind found.
+        case [1,1,0,0]:
+            hand_descriptors[0] = 'fullhouse'
+
+        # One 4-kind found
+        case [0,0,1,0]:
+            hand_descriptors[0] = '4kind'
+        # One 5-kind found
+        case [0,0,0,1]:
+            hand_descriptors[0] = '5kind'
     # Flush: same suit as first, 5 cards in deck
     check_suit = played_hand[0].suit
     same_suit = 0
     for card in played_hand:
         if card.suit == check_suit:
             same_suit += 1
+    # This should only be possible for the following hands:
+    # Full house, straight, and 5 of a kind.
+    # Else, evaluate to high card.
+
     if same_suit == 5:
-        pass
+        hand_descriptors.append('flush')
+        active_cards = played_hand
+    else:
+        hand_descriptors.append('high')
+        # played hand should be sorted from least to highest rank. Play the highest rank.
+        active_cards = played_hand[len(played_hand)-1]
 
-
-
-
-
-
-
-
-
-
-
+    # Evaluates non-flush modified hands.
+    eval_data = hand_score_lookup[hand_descriptors[0]]
+    # Evaluates hands that are also flushes.
+    match (hand_descriptors[0], hand_descriptors[1]):
+        case ('straight', 'flush'):
+            eval_data = hand_score_lookup['straightflush']
+        case ('fullhouse', 'flush'):
+            eval_data = hand_score_lookup['flushhouse']
+        case ('5kind', 'flush'):
+            eval_data = hand_score_lookup['flush5']
+    for card in active_cards:
+        # eval_data[0] = placeholder for multiplier. Right now nothing but this function changes mult.
+        eval_data[1] += card.chips
+    # returns added mult and chip value.
+    return eval_data
 
 def validate_input(message, valid_options=None):
     """

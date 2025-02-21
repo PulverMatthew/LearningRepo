@@ -6,7 +6,7 @@ functionalities.
 
 """
 from cards import PokerCard, PokerDeck
-from util import validate_input, shuffle, sort
+from util import validate_input, shuffle, sort_suit
 
 def test_utility_functions():
     """
@@ -107,7 +107,7 @@ def test_poker_deck():
     default_deck_original = PokerDeck()
     default_deck_modified = PokerDeck()
     default_deck_modified.card_deck = shuffle(default_deck_modified.card_deck)
-    default_deck_modified.card_deck = sort(default_deck_modified.card_deck)
+    default_deck_modified.card_deck = sort_suit(default_deck_modified.card_deck)
     for i in range(default_deck.card_count):
         assert (default_deck_original.card_deck[i].suit, default_deck_original.card_deck[i].rank) == (default_deck_modified.card_deck[i].suit, default_deck_modified.card_deck[i].rank)
 
@@ -117,7 +117,7 @@ def test_poker_deck():
     oops_modified = PokerDeck()
     oops_modified.set_deck('Oops')
     oops_modified.card_deck = shuffle(oops_modified.card_deck)
-    oops_modified.card_deck = sort(oops_modified.card_deck)
+    oops_modified.card_deck = sort_suit(oops_modified.card_deck)
     for i in range(oops_original.card_count):
         assert (oops_original.card_deck[i].suit, oops_original.card_deck[i].rank) == (oops_modified.card_deck[i].suit, oops_modified.card_deck[i].rank)
 

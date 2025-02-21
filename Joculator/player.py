@@ -4,7 +4,7 @@ The player module. Contains the player class, which regulates information relate
 import random
 import math
 from cards import PokerDeck
-from util import read_file, menu_display, validate_input, clear_screen, shuffle
+from util import read_file, menu_display, validate_input, clear_screen, shuffle, hand_evaluator
 class Player:
     """
     The player class, represents the player and all information related to the player. 
@@ -157,6 +157,7 @@ class Blind():
                     selected_cards.append(card)
             match game_input:
                 case 'a':
-                    pass
+                    score_list = hand_evaluator(selected_cards)
+                    player.score += score_list[0] * score_list[1]
                 case 'b':
-                    pass
+                    continue

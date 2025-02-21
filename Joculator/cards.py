@@ -3,7 +3,6 @@ cards.py: Contains classes for objects in Joculator related to playing cards,
 such as numbered cards, face cards, and aces. Will implement Jokers,
 and other cards found in Balatro later.
 """
-import random
 class PokerCard:
     """
     The PokerCard object represents a standard playing card in a playing card deck.
