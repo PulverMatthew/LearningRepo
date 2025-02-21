@@ -44,13 +44,13 @@ def sort_suit(original_deck):
     # For every sublist, selection sort the sublist by rank.
     for card_list in buckets.values():
         for i in range(len(card_list) - 1):
-            minimum_index = i
+            min_index = i
             for j in range(i + 1, len(card_list)):
                 compare_1 = PokerCard.rank_hierarchy_lookup[card_list[j].rank]
-                compare_2 = PokerCard.rank_hierarchy_lookup[card_list[minimum_index].rank]
+                compare_2 = PokerCard.rank_hierarchy_lookup[card_list[min_index].rank]
                 if compare_1 < compare_2:
-                    minimum_index = j
-            card_list[i], card_list[minimum_index] = card_list[minimum_index], card_list[i]
+                    min_index = j
+            card_list[i], card_list[min_index] = card_list[min_index], card_list[i]
     modified_deck = []
     # Append the sublists in suit order.
     for suit in PokerCard.suits:
@@ -70,13 +70,13 @@ def sort_rank(original_deck):
     """
     original_deck = []
     for i in range(len(original_deck) - 1):
-        minimum_index = i
+        min_index = i
         for j in range(i + 1, len(original_deck)):
             compare_1 = PokerCard.rank_hierarchy_lookup[original_deck[j].rank]
-            compare_2 = PokerCard.rank_hierarchy_lookup[original_deck[minimum_index].rank]
+            compare_2 = PokerCard.rank_hierarchy_lookup[original_deck[min_index].rank]
             if compare_1 < compare_2:
-                minimum_index = j
-        original_deck[i], original_deck[minimum_index] = original_deck[minimum_index], original_deck[i]
+                min_index = j
+        original_deck[i], original_deck[min_index] = original_deck[min_index], original_deck[i]
     return original_deck
 def hand_evaluator(played_hand):
     """
@@ -193,7 +193,7 @@ def hand_evaluator(played_hand):
         case ('5kind', 'flush'):
             eval_data = hand_score_lookup['flush5']
     for card in active_cards:
-        # eval_data[0] = placeholder for multiplier. Right now nothing but this function changes mult.
+        # eval_data[0] = placeholder for multiplier.
         eval_data[1] += card.chips
     # returns added mult and chip value.
     return eval_data

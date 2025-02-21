@@ -3,7 +3,7 @@ Game module, houses the game logic for readability.
 """
 from util import clear_screen, check_file, write_file, read_file, validate_input, save_generation
 from settings import settings
-from player import Player
+from player import Player, Blind
 # from cards import PokerCard, PokerDeck
 def play_game():
     """
@@ -37,3 +37,30 @@ def play_game():
                 write_file('save.txt', data)
                 clear_screen()
     player = Player()
+    while player.ante < 8:
+        current_ante = Blind(player.ante)
+        current_ante.small_blind()
+        choice = current_ante.challenge_query
+        match choice:
+            case True:
+                current_ante.challenge(player)
+            case False:
+                pass
+        current_ante = Blind(player.ante)
+        current_ante.big_blind()
+        choice = current_ante.challenge_query
+        match choice:
+            case True:
+                current_ante.challenge(player)
+            case False:
+                pass
+        current_ante = Blind(player.ante)
+        current_ante.wall()
+        choice = current_ante.challenge_query
+        match choice:
+            case True:
+                current_ante.challenge(player)
+            case False:
+                pass
+        clear_screen()
+        input('You win!')

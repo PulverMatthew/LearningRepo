@@ -33,13 +33,14 @@ class Player:
         self.discards = int(discard_str)
         self.hand_size = int(hand_size_str)
         self.name = str(name)
-        self.ante_base = 200 * math.exp2(int(ante_str))
+        self.ante =  int(ante_str)
         self.round = int(round_str)
         self.money = int(money_str)
         self.deck = PokerDeck()
         self.deck.set_deck(deck_str)
         self.seed = tuple(seed_str)
         random.seed(self.seed)
+
         self.score = 0
         self.hand = []
 
@@ -53,8 +54,8 @@ class Blind():
         methods below.
         difficulty (int): What ante is this blind on? 
     """
-    def __init__(self):
-        self.score_requirement = 100
+    def __init__(self, difficulty):
+        self.score_requirement = 200 * math.exp2(int(difficulty))
         self.blind_type = 'Default'
         self.reward = 1
 
@@ -168,4 +169,3 @@ class Blind():
         else:
             win_state = None
         return win_state
-                
