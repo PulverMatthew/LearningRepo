@@ -121,9 +121,9 @@ class Blind():
         with the number of hands given to them.
 
         Parameters:
-            player: The player object, representing player data.
+            player (obj): The player object, representing player data.
         Returns:
-            win_state: Boolean representing if the game was won or not. 
+            win_state (bool): Boolean representing if the game was won or not. 
         """
         shuffle(player.deck.card_deck)
         while player.score < self.score_requirement and player.hands > 0:
@@ -161,3 +161,11 @@ class Blind():
                     player.score += score_list[0] * score_list[1]
                 case 'b':
                     continue
+        if player.hands == 0:
+            win_state = False
+        elif player.score >= self.score_requirement:
+            win_state = True
+        else:
+            win_state = None
+        return win_state
+                
