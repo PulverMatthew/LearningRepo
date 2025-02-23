@@ -89,8 +89,12 @@ def hand_evaluator(played_hand):
     Parameters:
         played_hand (lst): List of cards selected by the player.
     Returns:
-        eval_data (list): A list of 2 values: mult and chips in order.
+        eval_data (tuple): A tuple containing a string of the hand name
+        and a score containing the evaluated value of the played hand.
     """
+    # if played hand is null, break out of the function.
+    if played_hand == []:
+        return None
     # Entry is as follows: Name:{mult, chips}
     hand_score_lookup = {
         'high': [1, 5],
@@ -173,26 +177,33 @@ def hand_evaluator(played_hand):
     if same_suit == 5:
         hand_descriptors.append('flush')
         active_cards = played_hand
-    eval_data = [0,0]
+    eval_score = [1,5]
+    eval_name = 'high'
+    eval_data = (eval_name, eval_score)
     if len(active_cards) < 5:
-        eval_data = hand_score_lookup[hand_descriptors[0]]
+        eval_score = hand_score_lookup[hand_descriptors[0]]
+        eval_name = hand_descriptors[0]
     try:
         if hand_descriptors[1] == 'flush':
-            eval_data = hand_score_lookup['flush']
+            eval_score = hand_score_lookup['flush']
+            eval_name = 'flush'
         match (hand_descriptors[0], hand_descriptors[1]):
-            case ('high', 'flush'):
-                eval_data = hand_score_lookup['flush']
             case ('straight', 'flush'):
-                eval_data = hand_score_lookup['straightflush']
+                eval_score = hand_score_lookup['straightflush']
+                eval_name = 'straight flush'
             case ('fullhouse', 'flush'):
-                eval_data = hand_score_lookup['flushhouse']
+                eval_score = hand_score_lookup['flushhouse']
+                eval_name = 'flush house'
             case ('5kind', 'flush'):
-                eval_data = hand_score_lookup['flush5']
+                eval_score = hand_score_lookup['flush5']
+                eval_name = 'flush five'
     except IndexError:
         pass
     for card in active_cards:
-        # eval_data[0] = placeholder for multiplier.
-        eval_data[1] += card.chips
+        # eval_score[0] = placeholder for multiplier.
+        eval_score[1] += card.chips
+        evaluated_score = eval_score[0] * eval_score[1]
+        eval_data = (eval_name, evaluated_score)
     # returns added mult and chip value.
     return eval_data
 

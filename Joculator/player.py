@@ -175,15 +175,19 @@ class Blind():
             player.deck.deal(player.hand)
         while player.score < self.score_requirement and player.hands > 0:
             clear_screen()
-
+            hand_type = hand_evaluator(selected_cards)
             print(f'{self.blind_type}: Score at least {self.score_requirement}')
             print(f'Current score is: {player.score}')
             print(f'Hands: {player.hands}')
             print(f'Discards: {player.discards}')
+            if hand_type is not None:
+                print(f'Hand Selected: {hand_type[0]}')
             # Display selected cards on top of the player's hand. Update every turn.
+            print('Selected Cards: ')
             for index, card in enumerate(selected_cards):
                 print(f'({index}. {card.suit} {card.rank})', end=' ')
             print('\n')
+            print('Current Hand: ')
             for index, card in enumerate(player.hand):
                 print(f'({index}. {card.suit} {card.rank})', end=' ')
             print('\n')
@@ -203,8 +207,8 @@ class Blind():
             index = game_input
             match game_input:
                 case 'a':
-                    score_list = hand_evaluator(selected_cards)
-                    player.score += score_list[0] * score_list[1]
+                    hand_score = hand_evaluator(selected_cards)
+                    player.score += hand_score[1]
                     player.hands -= 1
                     for i in range(player.hand_size - len(player.hand)):
                         player.deck.deal(player.hand)
@@ -226,7 +230,7 @@ class Blind():
         if player.score >= self.score_requirement:
             win_state = True
             player.round += 1
-            player.score = 0 
+            player.score = 0
         elif player.hands == 0:
             win_state = False
         else:

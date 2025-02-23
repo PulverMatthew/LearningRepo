@@ -17,3 +17,5 @@ functions.
 
 Keeping track of variable states is an issue. Learning to debug would be helpful for making sure the
 program acts as it should. Will learn in the future alongside completing unit-testing before Alpha.
+
+Need to rewrite validation, as it's pretty much toothless in my program currently.

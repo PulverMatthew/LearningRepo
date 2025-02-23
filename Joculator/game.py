@@ -79,5 +79,5 @@ def play_game():
         elif not outcome:
             input('You lose.')
             exit()
-        clear_screen()
-        input('You win!')
+    clear_screen()
+    input('You win!')
