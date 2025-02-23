@@ -107,18 +107,18 @@ def hand_evaluator(played_hand):
         'flush5': [50, 100]
     }
     # Card patterns for which hand matches.
-    hand_descriptors = []
+    hand_descriptors = ['high']
     # Play what cards are a part of the hand.
     active_cards = []
 
     # Straight: Sort the list by rank, and check if each rank is consecutive. No low aces.
     sort_rank(played_hand)
     consecutive_ranks = 0
-    for i in enumerate(played_hand):
-        if PokerCard.rank_hierarchy_lookup[played_hand.rank[i]] - PokerCard.rank_hierarchy_lookup[played_hand.rank[i+1]] == 1:
+    for i in range(len(played_hand)-1):
+        if PokerCard.rank_hierarchy_lookup[played_hand[i].rank] - PokerCard.rank_hierarchy_lookup[played_hand[i+1].rank] == 1:
             consecutive_ranks += 1
     if consecutive_ranks == 4:
-        hand_descriptors[0] = 'straight'
+        hand_descriptors.append('straight')
         active_cards = played_hand
     # Pair, 2 Pair, 3Kind, 4Kind, Full House:
     buckets = {}
@@ -170,28 +170,26 @@ def hand_evaluator(played_hand):
     for card in played_hand:
         if card.suit == check_suit:
             same_suit += 1
-    # This should only be possible for the following hands:
-    # Full house, straight, and 5 of a kind.
-    # Else, evaluate to high card.
-
     if same_suit == 5:
         hand_descriptors.append('flush')
         active_cards = played_hand
-    else:
-        hand_descriptors.append('high')
-        # played hand should be sorted from least to highest rank. Play the highest rank.
-        active_cards = played_hand[len(played_hand)-1]
-
-    # Evaluates non-flush modified hands.
-    eval_data = hand_score_lookup[hand_descriptors[0]]
-    # Evaluates hands that are also flushes.
-    match (hand_descriptors[0], hand_descriptors[1]):
-        case ('straight', 'flush'):
-            eval_data = hand_score_lookup['straightflush']
-        case ('fullhouse', 'flush'):
-            eval_data = hand_score_lookup['flushhouse']
-        case ('5kind', 'flush'):
-            eval_data = hand_score_lookup['flush5']
+    eval_data = [0,0]
+    if len(active_cards) < 5:
+        eval_data = hand_score_lookup[hand_descriptors[0]]
+    try:
+        if hand_descriptors[1] == 'flush':
+            eval_data = hand_score_lookup['flush']
+        match (hand_descriptors[0], hand_descriptors[1]):
+            case ('high', 'flush'):
+                eval_data = hand_score_lookup['flush']
+            case ('straight', 'flush'):
+                eval_data = hand_score_lookup['straightflush']
+            case ('fullhouse', 'flush'):
+                eval_data = hand_score_lookup['flushhouse']
+            case ('5kind', 'flush'):
+                eval_data = hand_score_lookup['flush5']
+    except IndexError:
+        pass
     for card in active_cards:
         # eval_data[0] = placeholder for multiplier.
         eval_data[1] += card.chips
@@ -212,11 +210,15 @@ def validate_input(message, valid_options=None):
     Returns:
         str: The original message if it is valid.
     """
+    message = message.lower()
     try:
         if valid_options is None or message in valid_options:
             return message
+        if message not in valid_options:
+            print("Not a valid input!")
     except ValueError as ve:
         print(f"Input error: {ve}")
+
 
 # List of allowed filenames
 filenamesAllowed = ['save.txt']
@@ -291,8 +293,9 @@ def save_generation():
         read_file('save.txt')
     except FileNotFoundError:
         clear_screen()
-        random.seed()
-        current_seed = random.getstate()
+        user_input = input('What should the seed be? Enter arbitrary characters.')
+        seed_input = validate_input(user_input)
+        random.seed(seed_input)
         data = [
             '4\n',  # 1. Number of Hands
             '3\n',  # 2. Number of Discards
@@ -302,8 +305,9 @@ def save_generation():
             '1\n', # 6. Current round
             '4\n', # 7. Current Money
             'Default\n', # 8. Chosen card deck
+            f'{seed_input}\n' # 10 What is the current seed? 
             'False\n',  # 9 Has a game already been started?
-            f'{current_seed}' # 10 What is the current seed? Defaults to system time
+
         ]
         write_file('save.txt', data)
 

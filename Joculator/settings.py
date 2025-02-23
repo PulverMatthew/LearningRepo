@@ -24,6 +24,7 @@ def settings():
             5: 'Round',
             6: 'Money',
             7: 'Deck',
+            8: 'Seed',
         }
         for index, entry in enumerate(data):
             label = labels.get(index)
@@ -100,7 +101,7 @@ def settings():
             case '4':
                 user_input = input('What seed do you want? ')
                 game_input = validate_input(user_input)
-                data[9] = tuple(game_input)
+                data[8] = game_input + '\n'
             case '5':
                 write_file('save.txt', data)
                 save_settings = True

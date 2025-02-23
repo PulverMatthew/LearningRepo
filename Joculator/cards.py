@@ -147,15 +147,15 @@ class PokerDeck:
                 new_deck = self.oops_spade_hearts_deck()
         self.card_deck = new_deck
         self.card_count = len(new_deck)
-    def deal(self):
+    def deal(self, target_list):
         """
-        Getter method for the deck which returns the first card in a deck.
-        
-        Returns:
-            selected_card(PokerCard): A card selected from the start of the
-            PokerDeck.card_deck list.
+        Sends the first card in a deck to the specified list.
+        Parameters:
+            target_list (lst): The list for which the poker card
+            will be sent to. 
         """
-        return self.card_deck.pop(0)
+        selected_hand = self.card_deck.pop()
+        target_list.append(selected_hand)
     def default_deck(self):
         """
         Generates the default deck of playing cards.

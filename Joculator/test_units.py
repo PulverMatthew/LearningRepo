@@ -6,7 +6,7 @@ functionalities.
 
 """
 from cards import PokerCard, PokerDeck
-from util import validate_input, shuffle, sort_suit
+from util import validate_input, shuffle, sort_suit, hand_evaluator
 
 def test_utility_functions():
     """
@@ -14,6 +14,14 @@ def test_utility_functions():
     Tests the input validation to make sure that invalid
     inputs are caught and valid inputs are accepted.
     """
+    card_deck = [PokerCard('Hearts', '2'), PokerCard('Hearts', '2'), PokerCard('Hearts', '2'), PokerCard('Hearts', '2'), PokerCard('Hearts', '2')]
+    assert hand_evaluator(card_deck) == [50, 110]
+    card_deck = [PokerCard('Hearts', '2'), PokerCard('Hearts', '3'), PokerCard('Hearts', '4'), PokerCard('Hearts', '5'), PokerCard('Hearts', '6')]
+    assert hand_evaluator(card_deck) == [20, 120]
+    card_deck = [PokerCard('Hearts', '2'), PokerCard('Hearts', '2')]
+    assert hand_evaluator(card_deck) == [2, 9]
+
+
     menu_options = {
         'test1': 'test2',
         'test3': 'test4',
@@ -21,6 +29,27 @@ def test_utility_functions():
     }
     assert validate_input('InvalidInput', menu_options) is None
     assert validate_input('test1', menu_options) == 'test1'
+
+    # Testing shuffle and sorting algorithm
+
+    # Default Deck
+    default_deck_original = PokerDeck()
+    default_deck_modified = PokerDeck()
+    default_deck_modified.card_deck = shuffle(default_deck_modified.card_deck)
+    default_deck_modified.card_deck = sort_suit(default_deck_modified.card_deck)
+    for i in range(default_deck_modified.card_count):
+        assert (default_deck_original.card_deck[i].suit, default_deck_original.card_deck[i].rank) == (default_deck_modified.card_deck[i].suit, default_deck_modified.card_deck[i].rank)
+
+    # Oops Deck
+    oops_original = PokerDeck()
+    oops_original.set_deck('Oops')
+    oops_modified = PokerDeck()
+    oops_modified.set_deck('Oops')
+    oops_modified.card_deck = shuffle(oops_modified.card_deck)
+    oops_modified.card_deck = sort_suit(oops_modified.card_deck)
+    for i in range(oops_original.card_count):
+        assert (oops_original.card_deck[i].suit, oops_original.card_deck[i].rank) == (oops_modified.card_deck[i].suit, oops_modified.card_deck[i].rank)
+
 
 def test_poker_card_identity():
     """
@@ -100,27 +129,6 @@ def test_poker_deck():
         assert (card.suit, card.rank) in oops_deck_check
     assert len(oops_deck.card_deck) == oops_deck.card_count
     assert oops_deck.card_count == len(oops_deck_check)
-
-    # Testing shuffle and sorting algorithm
-
-    # Default Deck
-    default_deck_original = PokerDeck()
-    default_deck_modified = PokerDeck()
-    default_deck_modified.card_deck = shuffle(default_deck_modified.card_deck)
-    default_deck_modified.card_deck = sort_suit(default_deck_modified.card_deck)
-    for i in range(default_deck.card_count):
-        assert (default_deck_original.card_deck[i].suit, default_deck_original.card_deck[i].rank) == (default_deck_modified.card_deck[i].suit, default_deck_modified.card_deck[i].rank)
-
-    # Oops Deck
-    oops_original = PokerDeck()
-    oops_original.set_deck('Oops')
-    oops_modified = PokerDeck()
-    oops_modified.set_deck('Oops')
-    oops_modified.card_deck = shuffle(oops_modified.card_deck)
-    oops_modified.card_deck = sort_suit(oops_modified.card_deck)
-    for i in range(oops_original.card_count):
-        assert (oops_original.card_deck[i].suit, oops_original.card_deck[i].rank) == (oops_modified.card_deck[i].suit, oops_modified.card_deck[i].rank)
-
 test_utility_functions()
 test_poker_card_identity()
 test_poker_card_setters()

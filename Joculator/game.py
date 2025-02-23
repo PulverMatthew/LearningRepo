@@ -4,6 +4,7 @@ Game module, houses the game logic for readability.
 from util import clear_screen, check_file, write_file, read_file, validate_input, save_generation
 from settings import settings
 from player import Player, Blind
+
 # from cards import PokerCard, PokerDeck
 def play_game():
     """
@@ -11,11 +12,11 @@ def play_game():
     """
     clear_screen()
     # Checks to see if the player has played the game before.
-    has_previous_game = check_file('save.txt', 8).strip()
+    has_previous_game = check_file('save.txt', 9).strip()
     # Update to reflect new game having been started
     if has_previous_game == 'False':
         data = read_file('save.txt')
-        data[8] = 'True\n'
+        data[9] = 'True\n'
         write_file('save.txt', data)
     # Check to see if the player wants to restart the game or continue.
     elif has_previous_game == 'True':
@@ -37,30 +38,46 @@ def play_game():
                 write_file('save.txt', data)
                 clear_screen()
     player = Player()
+    outcome = None
     while player.ante < 8:
         current_ante = Blind(player.ante)
         current_ante.small_blind()
-        choice = current_ante.challenge_query
+        choice = current_ante.challenge_query(player)
         match choice:
             case True:
-                current_ante.challenge(player)
+                outcome = current_ante.challenge(player)
             case False:
                 pass
+        if outcome:
+            pass
+        elif not outcome:
+            input('You lose.')
+            exit()
         current_ante = Blind(player.ante)
         current_ante.big_blind()
-        choice = current_ante.challenge_query
+        choice = current_ante.challenge_query(player)
         match choice:
             case True:
-                current_ante.challenge(player)
+                outcome = current_ante.challenge(player)
             case False:
                 pass
+        if outcome:
+            pass
+        elif not outcome:
+            input('You lose.')
+            exit()
         current_ante = Blind(player.ante)
         current_ante.wall()
-        choice = current_ante.challenge_query
+        choice = current_ante.challenge_query(player)
         match choice:
             case True:
-                current_ante.challenge(player)
+                outcome = current_ante.challenge(player)
             case False:
                 pass
+        if outcome:
+            pass
+        elif not outcome:
+            input('You lose.')
+            exit()
         clear_screen()
         input('You win!')
