@@ -132,30 +132,34 @@ class Blind():
         Returns: 
             blind_decision(bool) - Has the player accepted the challenge?
         """
-        clear_screen()
-        display = {
-            'Current Blind': self.blind_type,
-            'Reward': str(self.reward),
-            'Ante': player.ante,
-            'Round': player.round,
-            'Options': ''
-        }
-        menu_display(display)
-        options = {
-            '1':'Select Blind',
-            '2':'Skip'
-        }
-        menu_display(options)
-        blind_decision = None
-        user_input = input('Choose an option: ')
-        game_input = validate_input(user_input, options)
-        match game_input:
-            case '1':
-                blind_decision = True
-            case '2':
-                blind_decision = False
-            case _:
-                blind_decision = False
+        query_answer = False
+        while not query_answer:
+            clear_screen()
+            display = {
+                'Current Blind': self.blind_type,
+                'Reward': str(self.reward),
+                'Ante': player.ante,
+                'Round': player.round,
+                'Options': ''
+            }
+            menu_display(display)
+            options = {
+                '1':'Select Blind',
+                '2':'Skip'
+            }
+            menu_display(options)
+            blind_decision = None
+            user_input = input('Choose an option: ')
+            game_input = validate_input(user_input, options)
+            match game_input:
+                case '1':
+                    blind_decision = True
+                    query_answer = True
+                case '2':
+                    blind_decision = False
+                    query_answer = True
+                case _:
+                    continue
         return blind_decision
 
     def challenge(self, player):
@@ -232,9 +236,6 @@ class Blind():
                 pass
             if player.score >= self.score_requirement:
                 win_state = True
-                player.round += 1
-                player.score = 0
-                player.reset()
             elif player.hands == 0:
                 win_state = False
             else:

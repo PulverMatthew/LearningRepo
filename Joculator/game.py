@@ -47,9 +47,11 @@ def play_game():
             case True:
                 outcome = current_ante.challenge(player)
             case False:
-                pass
+                outcome = True
         if outcome:
-            pass
+            player.round += 1
+            player.score = 0
+            player.reset()
         elif not outcome:
             input('You lose.')
             exit()
@@ -60,9 +62,11 @@ def play_game():
             case True:
                 outcome = current_ante.challenge(player)
             case False:
-                pass
+                outcome = True
         if outcome:
-            pass
+            player.round += 1
+            player.score = 0
+            player.reset()
         elif not outcome:
             clear_screen()
             input('You lose.')
@@ -76,7 +80,9 @@ def play_game():
             case False:
                 pass
         if outcome:
-            pass
+            player.round += 1
+            player.score = 0
+            player.reset()
         elif not outcome:
             input('You lose.')
             exit()
