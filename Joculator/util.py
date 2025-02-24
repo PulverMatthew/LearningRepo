@@ -134,6 +134,8 @@ def hand_evaluator(played_hand):
     of_kind = [0, 0, 0, 0]
     for card_list in buckets.values():
         match len(card_list):
+            case 1:
+                active_cards = card_list
             case 2:
                 of_kind[0] += 1
                 active_cards += card_list
@@ -161,7 +163,6 @@ def hand_evaluator(played_hand):
         # One pair, and one 3-kind found.
         case [1,1,0,0]:
             hand_descriptors[0] = 'fullhouse'
-
         # One 4-kind found
         case [0,0,1,0]:
             hand_descriptors[0] = '4kind'

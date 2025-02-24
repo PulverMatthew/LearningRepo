@@ -171,9 +171,10 @@ class Blind():
         """
         shuffle(player.deck.card_deck)
         selected_cards = []
+        win_state = None
         for i in range(player.hand_size - len(player.hand)):
             player.deck.deal(player.hand)
-        while player.score < self.score_requirement and player.hands > 0:
+        while win_state is None:
             clear_screen()
             hand_type = hand_evaluator(selected_cards)
             print(f'{self.blind_type}: Score at least {self.score_requirement}')
@@ -200,40 +201,42 @@ class Blind():
                 valid_choices.append(str(index))
             for i in display:
                 valid_choices.append(str(i))
+            if player.discards == 0:
+                display.pop('b')
+                valid_choices.remove('b')
 
             menu_display(display)
             user_input = input('Choose the index of a card or the options above: ')
             game_input = validate_input(user_input, valid_choices)
             index = game_input
-            match game_input:
-                case 'a':
-                    hand_score = hand_evaluator(selected_cards)
-                    player.score += hand_score[1]
-                    player.hands -= 1
-                    for i in range(player.hand_size - len(player.hand)):
-                        player.deck.deal(player.hand)
-                    selected_cards = []
-                case 'b':
-                    player.discards -= 1
-                    for i in range(player.hand_size - len(player.hand)):
-                        player.deck.deal(player.hand)
-                    selected_cards = []
-            if game_input.isdigit() and len(selected_cards) < 5:
+            if game_input in valid_choices and len(selected_cards) > 0:
+                match game_input:
+                    case 'a':
+                        hand_score = hand_evaluator(selected_cards)
+                        player.score += hand_score[1]
+                        player.hands -= 1
+                        for i in range(player.hand_size - len(player.hand)):
+                            player.deck.deal(player.hand)
+                        selected_cards = []
+                    case 'b':
+                        player.discards -= 1
+                        for i in range(player.hand_size - len(player.hand)):
+                            player.deck.deal(player.hand)
+                        selected_cards = []
+            if game_input in valid_choices and len(selected_cards) < 5 and game_input.isdigit():
                 index = int(game_input)
                 if 0 <= index < len(player.hand):
                     card = player.hand.pop(index)
                     selected_cards.append(card)
-                else:
-                    print("Invalid card index!")
             else:
                 pass
-        if player.score >= self.score_requirement:
-            win_state = True
-            player.round += 1
-            player.score = 0
-        elif player.hands == 0:
-            win_state = False
-        else:
-            win_state = None
-        player.reset()
+            if player.score >= self.score_requirement:
+                win_state = True
+                player.round += 1
+                player.score = 0
+                player.reset()
+            elif player.hands == 0:
+                win_state = False
+            else:
+                win_state = None
         return win_state

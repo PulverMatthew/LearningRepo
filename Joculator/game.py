@@ -64,6 +64,7 @@ def play_game():
         if outcome:
             pass
         elif not outcome:
+            clear_screen()
             input('You lose.')
             exit()
         current_ante = Blind(player.ante)
